@@ -82,7 +82,7 @@ modelo_regresion = joblib.load(MODELO_REGRESION_PATH)
 # Seleccionar modelo
 st.sidebar.title("Seleccionar Modelo")
 modelo = st.sidebar.radio("Elige un modelo:", 
-                          ["Árbol de Decisión", "KNN Clasificación", "Regresión Lineal"])
+                          ["Árbol de Decisión", "KNN Regresión", "Regresión Lineal"])
 
 if modelo == "Árbol de Decisión":
     st.header("Árbol de Decisión - Predicción de Valor de Casa")
@@ -110,27 +110,35 @@ if modelo == "Árbol de Decisión":
         pred = modelo_arbol.predict(nuevo)
         st.success(f" Valor predicho de la casa: ${pred[0]:,.2f}")
 
-elif modelo == "KNN Clasificación":
-    st.header(" KNN - Predicción de  valor de casa")
+elif modelo == "KNN Regresión":
+    st.header(" KNN - Predicción de Valor de Casa")
     
-    col1, col2, col3 = st.columns(3)
+    col1, col2, col3, col4 = st.columns(4)
     with col1:
-        edad = st.number_input("Edad:", min_value=0, value=30)
+        m2 = st.number_input("Metros cuadrados:", min_value=0.0, value=100.0, key="knn_m2")
+        num_habitaciones = st.number_input("Número de habitaciones:", min_value=0, value=3, key="knn_hab")
     with col2:
-        ingresos = st.number_input("Ingresos mensuales ($):", min_value=0, value=3000)
+        num_banos = st.number_input("Número de baños:", min_value=0, value=2, key="knn_ban")
+        antiguedad = st.number_input("Antigüedad (años):", min_value=0, value=10, key="knn_ant")
     with col3:
-        puntaje = st.number_input("Puntaje de crédito:", min_value=0, value=700)
+        distancia_centro = st.number_input("Distancia al centro (km):", min_value=0.0, value=5.0, key="knn_dist")
+        estrato = st.number_input("Estrato:", min_value=1, max_value=6, value=3, key="knn_est")
+    with col4:
+        garaje = st.number_input("Garaje:", min_value=0, value=1, key="knn_gar")
+        zona = st.number_input("Zona:", min_value=0, value=1, key="knn_zon")
     
     if st.button("Predecir valor de casa", key="knn"):
-        nuevo = pd.DataFrame([[edad, ingresos, puntaje]],
-                           columns=["edad", "ingresos", "puntaje_credito"])
-        nuevo = scaler.transform(nuevo)
-        pred = modelo_knn.predict(nuevo)
-        
-        st.success(f"Valor predicho de la casa: ${pred[0]:,.2f}")
+        nuevo = pd.DataFrame(
+            [[m2, num_habitaciones, num_banos, antiguedad, distancia_centro, estrato, garaje, zona]],
+            columns=["metros_cuadrados", "num_habitaciones", "num_banos", "antiguedad",
+                    "distancia_centro", "estrato", "garaje", "zona"]
+        )
+        nuevo_escalado = scaler.transform(nuevo)
+        pred = modelo_knn.predict(nuevo_escalado)
+        st.success(f" Valor predicho de la casa: ${pred[0]:,.2f}")
 
 elif modelo == "Regresión Lineal":
-    st.header("📈 Regresión Lineal - Predicción de Valor de Casa")
+    st.header(" Regresión Lineal - Predicción de Valor de Casa")
     
     col1, col2, col3, col4 = st.columns(4)
     with col1:

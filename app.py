@@ -44,8 +44,9 @@ def entrenar_modelos():
         
         # Entrenamiento KNN
         if not os.path.exists(MODELO_KNN_PATH):
-            x = data[["edad", "ingresos", "puntaje_credito"]]
-            y = data["compra"]
+            x = data[["metros_cuadrados", "num_habitaciones", "num_banos", "antiguedad", 
+                     "distancia_centro", "estrato", "garaje", "zona"]]
+            y = data["valor_casa"]
             x_train, _, y_train, _ = train_test_split(x, y, test_size=0.2, random_state=42)
             
             scaler = StandardScaler()

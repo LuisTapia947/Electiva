@@ -165,4 +165,4 @@ elif modelo == "Regresión Lineal":
         st.success(f"Valor predicho de la casa: ${pred[0]:,.2f}")
 
 st.divider()
-st.info("📊 Aplicación desarrollada con Streamlit Community Cloud")
+
